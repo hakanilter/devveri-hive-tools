@@ -1,5 +1,7 @@
 package com.devveri.hive.util;
 
+import java.text.DecimalFormat;
+
 public final class HdfsUtil {
 
     public static String getRelativePath(String path) {
@@ -20,6 +22,13 @@ public final class HdfsUtil {
             return path.substring(0, path.indexOf("/", 7));
         }
         return "";
+    }
+
+    public static String getHumanReadableFileSize(long size) {
+        if (size <= 0) return "0";
+        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 
 public class TableMetadata {
 
+    private String database;
     private String name;
     private String createScript;
 
@@ -17,7 +18,11 @@ public class TableMetadata {
     private Set<String> phantomFolders;
     private Set<String> phantomPartitions;
 
-    public TableMetadata(String name) {
+    private long diskUsage;
+    private long rowCount;
+
+    public TableMetadata(String database, String name) {
+        this.database = database;
         this.name = name;
     }
 
@@ -43,6 +48,15 @@ public class TableMetadata {
     }
 
     // getter setter
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public TableMetadata setDatabase(String database) {
+        this.database = database;
+        return this;
+    }
 
     public String getName() {
         return name;
@@ -104,6 +118,24 @@ public class TableMetadata {
 
     public TableMetadata setPhantomPartitions(Set<String> phantomPartitions) {
         this.phantomPartitions = phantomPartitions;
+        return this;
+    }
+
+    public long getDiskUsage() {
+        return diskUsage;
+    }
+
+    public TableMetadata setDiskUsage(long diskUsage) {
+        this.diskUsage = diskUsage;
+        return this;
+    }
+
+    public long getRowCount() {
+        return rowCount;
+    }
+
+    public TableMetadata setRowCount(long rowCount) {
+        this.rowCount = rowCount;
         return this;
     }
 

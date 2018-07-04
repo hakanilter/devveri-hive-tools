@@ -10,7 +10,7 @@ public class TableMetadataTest {
 
     @Test
     public void testExternalTable() {
-        TableMetadata tableMetadata = new TableMetadata("test");
+        TableMetadata tableMetadata = new TableMetadata("test", "test");
         tableMetadata.setCreateScript("CREATE EXTERNAL TABLE test (field STRING)");
         assertTrue(tableMetadata.isTable());
         assertTrue(tableMetadata.isExternal());
@@ -18,7 +18,7 @@ public class TableMetadataTest {
 
     @Test
     public void testNonExternalTable() {
-        TableMetadata tableMetadata = new TableMetadata("test");
+        TableMetadata tableMetadata = new TableMetadata("test", "test");
         tableMetadata.setCreateScript("CREATE TABLE test (field STRING)");
         assertTrue(tableMetadata.isTable());
         assertFalse(tableMetadata.isExternal());
@@ -26,7 +26,7 @@ public class TableMetadataTest {
 
     @Test
     public void testViewNonTable() {
-        TableMetadata tableMetadata = new TableMetadata("test");
+        TableMetadata tableMetadata = new TableMetadata("test", "test");
         tableMetadata.setCreateScript("CREATE VIEW test AS SELECT * FROM test");
         assertTrue(tableMetadata.isView());
         assertFalse(tableMetadata.isTable());
@@ -34,7 +34,7 @@ public class TableMetadataTest {
 
     @Test
     public void testNonViewTable() {
-        TableMetadata tableMetadata = new TableMetadata("test");
+        TableMetadata tableMetadata = new TableMetadata("test", "test");
         tableMetadata.setCreateScript("CREATE TABLE test (field STRING)");
         assertFalse(tableMetadata.isView());
         assertTrue(tableMetadata.isTable());
@@ -42,14 +42,14 @@ public class TableMetadataTest {
 
     @Test
     public void testPartitioned() {
-        TableMetadata tableMetadata = new TableMetadata("test");
+        TableMetadata tableMetadata = new TableMetadata("test", "test");
         tableMetadata.setCreateScript("CREATE TABLE test (field STRING) PARTITIONED BY (id STRING)");
         assertTrue(tableMetadata.isPartitioned());
     }
 
     @Test
     public void testNonPartitioned() {
-        TableMetadata tableMetadata = new TableMetadata("test");
+        TableMetadata tableMetadata = new TableMetadata("test", "test");
         tableMetadata.setCreateScript("CREATE TABLE test (field STRING)");
         assertFalse(tableMetadata.isPartitioned());
     }

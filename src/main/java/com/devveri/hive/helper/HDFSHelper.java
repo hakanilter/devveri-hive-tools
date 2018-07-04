@@ -1,6 +1,7 @@
 package com.devveri.hive.helper;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -58,6 +59,11 @@ public class HDFSHelper {
 			fileList.add(dirName);
 		}
 		return directoryCount;
+	}
+
+	public long getDirectorySize(String dirName) throws IOException, URISyntaxException {
+		FileSystem fs = getFileSystem(dirName);
+		return fs.getContentSummary(new Path(dirName)).getSpaceConsumed();
 	}
 
 	public List<String> getFileList(String dirName) throws IOException, URISyntaxException {

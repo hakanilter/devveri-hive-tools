@@ -27,15 +27,15 @@ public class HiveHelperIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void getTables() throws SQLException {
-        Set<String> tables = hive.getTables("test");
+    public void testTables() throws SQLException {
+        Set<String> tables = hive.getTables("default");
         assertNotNull(tables);
         assertTrue(tables.size() > 0);
     }
 
     @Test
-    public void getCreateTableScript() throws SQLException {
-        String createScript = hive.getCreateTableScript("test", "test_table");
+    public void testCreateTableScript() throws SQLException {
+        String createScript = hive.getCreateTableScript("default", "test_table");
         assertNotNull(createScript);
     }
 

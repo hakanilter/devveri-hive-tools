@@ -11,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.Collections;
 
 /**
@@ -34,7 +37,7 @@ public class TableAnalyzer {
     }
 
     public TableMetadata getMetadata(String database, String table) throws Exception {
-        TableMetadata tableMetadata = new TableMetadata(table);
+        TableMetadata tableMetadata = new TableMetadata(database, table);
         tableMetadata.setCreateScript(hive.getCreateTableScript(database, table));
 
         if (tableMetadata.isTable()) {
@@ -69,6 +72,14 @@ public class TableAnalyzer {
             }
         }
 
+        return tableMetadata;
+    }
+
+    public TableMetadata updateStats(TableMetadata tableMetadata) throws IOException, URISyntaxException, SQLException {
+        long size = hdfs.getDirectorySize(tableMetadata.getTableLocation());
+        long rowCount = hive.getRowCount(tableMetadata.getDatabase(), tableMetadata.getName());
+        tableMetadata.setDiskUsage(size);
+        tableMetadata.setRowCount(rowCount);
         return tableMetadata;
     }
 
