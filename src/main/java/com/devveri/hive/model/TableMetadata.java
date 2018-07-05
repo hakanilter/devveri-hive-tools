@@ -1,5 +1,6 @@
 package com.devveri.hive.model;
 
+import com.devveri.hive.util.HiveUtil;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -20,6 +21,10 @@ public class TableMetadata {
 
     private long diskUsage;
     private long rowCount;
+    private String format;
+    private boolean external;
+    private boolean partitioned;
+    private boolean view;
 
     public TableMetadata(String database, String name) {
         this.database = database;
@@ -29,22 +34,6 @@ public class TableMetadata {
     @Override
     public String toString() {
         return new Gson().toJson(this);
-    }
-
-    public boolean isExternal() {
-        return createScript != null && createScript.startsWith("CREATE EXTERNAL TABLE");
-    }
-
-    public boolean isPartitioned() {
-        return createScript != null && createScript.contains("PARTITIONED BY");
-    }
-
-    public boolean isTable() {
-        return createScript != null && (createScript.startsWith("CREATE TABLE") || createScript.startsWith("CREATE EXTERNAL TABLE"));
-    }
-
-    public boolean isView() {
-        return createScript != null && createScript.startsWith("CREATE VIEW");
     }
 
     // getter setter
@@ -73,6 +62,11 @@ public class TableMetadata {
 
     public TableMetadata setCreateScript(String createScript) {
         this.createScript = createScript;
+        // update metadata
+        format = HiveUtil.getFormat(createScript);
+        external = createScript != null && createScript.startsWith("CREATE EXTERNAL TABLE");
+        partitioned = createScript != null && createScript.contains("PARTITIONED BY");
+        view = createScript != null && createScript.startsWith("CREATE VIEW");
         return this;
     }
 
@@ -137,6 +131,26 @@ public class TableMetadata {
     public TableMetadata setRowCount(long rowCount) {
         this.rowCount = rowCount;
         return this;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public Boolean isExternal() {
+        return external;
+    }
+
+    public Boolean isPartitioned() {
+        return partitioned;
+    }
+
+    public boolean isView() {
+        return view;
+    }
+
+    public boolean isTable() {
+        return !view;
     }
 
 }

@@ -28,9 +28,10 @@ public class DatabaseReportTool {
         System.out.println("Updating statistics...");
         databaseAnalyzer.updateTableStats(databaseMetadata);
 
-        final String fileName = "report.json";
-        Files.write(Paths.get(fileName), databaseMetadata.toString().getBytes());
-        System.out.println("DDL script is saved in " + fileName);
+        final String fileName = database + ".json";
+        final String report = "var report = " + databaseMetadata.toString() + ";";
+        Files.write(Paths.get(fileName), report.getBytes());
+        System.out.println("Report is saved as " + fileName);
     }
 
 }

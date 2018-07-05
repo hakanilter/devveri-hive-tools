@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+        crossorigin="anonymous">
+
+    <title>Database Report</title>
+</head>
+
+<script type="text/javascript" src="report.json"></script>
+<script>
+    function humanFileSize(bytes, si) {
+        var thresh = si ? 1000 : 1024;
+        if(Math.abs(bytes) < thresh) {
+            return bytes + ' B';
+        }
+        var units = si
+            ? ['KB','MB','GB','TB','PB','EB','ZB','YB']
+            : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+        var u = -1;
+        do {
+            bytes /= thresh;
+            ++u;
+        } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+        return bytes.toFixed(1)+' '+units[u];
+    }
+    const numberWithCommas = (x) => {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+    // calculate total disk size
+    var totalDiskSize = 0;
+    for (tableName in report.tables) {
+            var table = report.tables[tableName];
+            totalDiskSize += table.diskUsage;
+    }
+</script>
+<body>    
+    <div style="margin: 30px">
+        <h1>Database Report: <script>document.write(report.name);</script></h1>        
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Table Name</th>
+                    <th scope="col">Table Type</th>
+                    <th scope="col">Data Format</th>
+                    <th scope="col">Partition</th>
+                    <th scope="col">Row Count</th>
+                    <th scope="col">Disk Size</th>
+                    <th scope="col">Disk Usage</th>
+                    <th scope="col"></th>                    
+                </tr>
+            </thead>
+            <tbody>
+                <script>
+                    var tables = [];
+                    for (tableName in report.tables) {
+                        tables.push(tableName);
+                    }
+                    tables.sort();
+                    tables.forEach(function(tableName) {
+                        var table = report.tables[tableName];
+                        document.write("<tr>");
+                        document.write("<td>" + table.name + "</td>");
+                        document.write("<td>" + (table.external ? "External" : "Managed") + "</td>");
+                        document.write("<td>" + table.format + "</td>");                    
+                        document.write("<td style=\"text-align: right\">" + numberWithCommas(table.partitions.length) + "</td>");
+                        document.write("<td style=\"text-align: right\">" + numberWithCommas(table.rowCount) + "</td>");
+                        document.write("<td style=\"text-align: right\">" + humanFileSize(table.diskUsage, true) + "</td>");
+                        document.write("<td><div class=\"progress\"><div class=\"progress-bar bg-success\" role=\"progressbar\" style=\"width: " + 
+                            parseInt(table.diskUsage*100.0/totalDiskSize) + "%\" aria-valuenow=\"" + 
+                            parseInt(table.diskUsage*100.0/totalDiskSize) + "\" aria-valuemin=\"0\" aria-valuemax=\"100\"></div></div></td>");
+                        document.write("<td>% " + parseFloat(table.diskUsage*100.0/totalDiskSize).toFixed(2) + "</td>");              
+                        document.write("</tr>");     
+                    });
+                </script>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

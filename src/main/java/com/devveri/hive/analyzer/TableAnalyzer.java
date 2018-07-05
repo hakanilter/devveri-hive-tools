@@ -6,6 +6,7 @@ import com.devveri.hive.helper.HiveHelper;
 import com.devveri.hive.model.TableMetadata;
 import com.devveri.hive.util.CollectionUtil;
 import com.devveri.hive.util.HdfsUtil;
+import com.devveri.hive.util.HiveUtil;
 import org.apache.hadoop.security.AccessControlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class TableAnalyzer {
         tableMetadata.setCreateScript(hive.getCreateTableScript(database, table));
 
         if (tableMetadata.isTable()) {
-            String path = hive.getTableLocation(tableMetadata.getCreateScript());
+            String path = HiveUtil.getLocation(tableMetadata.getCreateScript());
             tableMetadata.setTableLocation(path);
             // remove hdfs namenode url from the create script
             String nameNodeUrl = HdfsUtil.getNameNodeUrl(path);
