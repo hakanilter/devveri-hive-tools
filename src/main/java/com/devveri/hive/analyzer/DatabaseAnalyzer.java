@@ -40,7 +40,7 @@ public class DatabaseAnalyzer {
         DatabaseMetadata databaseMetadata = new DatabaseMetadata(database);
 
         // get table metadata
-        hive.getTables(database).stream().forEach(table -> {
+        hive.getTables(database).forEach(table -> {
             LOG.info("Started analyzing table: " + table);
             TableMetadata tableMetadata;
             try {
@@ -59,7 +59,7 @@ public class DatabaseAnalyzer {
     }
 
     public DatabaseMetadata updateTableStats(DatabaseMetadata databaseMetadata) {
-        databaseMetadata.getTables().values().stream().forEach(tableMetadata -> {
+        databaseMetadata.getTables().values().forEach(tableMetadata -> {
             try {
                 tableAnalyzer.updateStats(tableMetadata);
             } catch (Exception e) {

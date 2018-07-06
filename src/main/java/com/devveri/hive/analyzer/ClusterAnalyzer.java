@@ -17,14 +17,18 @@ public class ClusterAnalyzer {
     private HiveHelper hive;
     private HDFSHelper hdfs;
 
+    private DatabaseAnalyzer databaseAnalyzer;
+
     public ClusterAnalyzer(HiveConfig config) throws Exception {
         this.hive = new HiveHelper(config);
         this.hdfs = new HDFSHelper();
+        databaseAnalyzer = new DatabaseAnalyzer(hive, hdfs);
     }
 
     public ClusterAnalyzer(HiveHelper hive, HDFSHelper hdfs) {
         this.hive = hive;
         this.hdfs = hdfs;
+        databaseAnalyzer = new DatabaseAnalyzer(hive, hdfs);
     }
 
     public ClusterMetadata getMetadata(String name) throws Exception {
@@ -34,7 +38,6 @@ public class ClusterAnalyzer {
         System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", "4");
 
         // get database metadata
-        DatabaseAnalyzer databaseAnalyzer = new DatabaseAnalyzer(hive, hdfs);
         hive.getDatabases().parallelStream().forEach(database -> {
             LOG.info("Started analyzing database: " + database);
             try {
@@ -45,6 +48,12 @@ public class ClusterAnalyzer {
         });
 
         return clusterMetadata;
+    }
+
+    public void updateStatistics(ClusterMetadata clusterMetadata) {
+        clusterMetadata.getDatabases().values().parallelStream().forEach(databaseMetadata -> {
+            databaseAnalyzer.updateTableStats(databaseMetadata);
+        });
     }
 
 }
