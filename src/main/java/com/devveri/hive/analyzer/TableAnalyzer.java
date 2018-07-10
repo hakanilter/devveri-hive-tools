@@ -63,6 +63,13 @@ public class TableAnalyzer {
                     System.err.println("Folder doesn't exist: " + tableMetadata.getTableLocation());
                 }
                 tableMetadata.setFolders(Collections.EMPTY_LIST);
+            } catch (Exception e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Failed to read directory information: " + tableMetadata.getTableLocation(), e);
+                } else {
+                    System.err.println("Failed to read directory information: " + tableMetadata.getTableLocation());
+                }
+                tableMetadata.setFolders(Collections.EMPTY_LIST);
             }
             if (tableMetadata.isPartitioned()) {
                 tableMetadata.setPartitions(hive.getPartitionLocations(database, table));

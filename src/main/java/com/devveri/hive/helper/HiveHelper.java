@@ -3,9 +3,12 @@ package com.devveri.hive.helper;
 import com.devveri.hive.config.HiveConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -19,6 +22,19 @@ public class HiveHelper {
     public HiveHelper(HiveConfig config) throws ClassNotFoundException {
         this.config = config;
         Class.forName(config.getDriver());
+
+        // authentication support
+        final String authentication = System.getProperty("hadoop.security.authentication");
+        if (authentication != null) {
+            try {
+                // set the configuration
+                Configuration conf = new Configuration();
+                conf.set("hadoop.security.authentication", authentication);
+                UserGroupInformation.setConfiguration(conf);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Set<String> getDatabases() throws SQLException {

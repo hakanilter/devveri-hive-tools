@@ -35,6 +35,7 @@ public class ACLTool {
         Set<String> filteredResults = filter.equals("*") ? databases :
                 databases.stream().filter(pattern.asPredicate()).collect(Collectors.toSet());
 
+        // TODO get hive warehouse folder from the configuration
         filteredResults.forEach(database -> System.out.println(String.format("hdfs dfs -setfacl --set -R %s /user/hive/warehouse/%s.db", permission, database)));
     }
 

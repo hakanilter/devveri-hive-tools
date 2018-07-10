@@ -18,6 +18,10 @@ public class HDFSHelper {
 	
 	public HDFSHelper() {
 		config = new Configuration();
+		// add default config files
+		config.addResource(new Path("file:///etc/hadoop/conf/core-site.xml"));
+		config.addResource(new Path("file:///etc/hadoop/conf/hdfs-site.xml"));
+
 		config.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
 		config.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
 	}
