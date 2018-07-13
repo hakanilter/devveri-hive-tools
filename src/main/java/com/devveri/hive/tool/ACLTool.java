@@ -3,6 +3,8 @@ package com.devveri.hive.tool;
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.helper.HiveHelper;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,7 +38,12 @@ public class ACLTool {
                 databases.stream().filter(pattern.asPredicate()).collect(Collectors.toSet());
 
         // TODO get hive warehouse folder from the configuration
-        filteredResults.forEach(database -> System.out.println(String.format("hdfs dfs -setfacl --set -R %s /user/hive/warehouse/%s.db", permission, database)));
+        StringBuffer buffer = new StringBuffer("#!/bin/bash\n\n");
+        filteredResults.forEach(database -> buffer.append(String.format("hdfs dfs -setfacl --set -R %s /user/hive/warehouse/%s.db\n", permission, database)));
+
+        final String fileName = "acl-script.sh";
+        Files.write(Paths.get(fileName), buffer.toString().getBytes());
+        System.out.println("Sentry script is saved as " + fileName);
     }
 
 }

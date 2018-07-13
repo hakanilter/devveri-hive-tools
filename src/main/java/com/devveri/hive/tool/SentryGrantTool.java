@@ -3,6 +3,8 @@ package com.devveri.hive.tool;
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.helper.HiveHelper;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -38,7 +40,13 @@ public class SentryGrantTool {
         Set<String> filteredResults = filter.equals("*") ? databases :
                 databases.stream().filter(pattern.asPredicate()).collect(Collectors.toSet());
 
-        filteredResults.forEach(database -> System.out.println(String.format("GRANT %s ON DATABASE %s TO ROLE %s;", action, database, roleName)));
+        // generate file
+        StringBuffer buffer = new StringBuffer();
+        filteredResults.forEach(database -> buffer.append(String.format("GRANT %s ON DATABASE %s TO ROLE %s;\n", action, database, roleName)));
+
+        final String fileName = "sentry.sql";
+        Files.write(Paths.get(fileName), buffer.toString().getBytes());
+        System.out.println("Sentry script is saved as " + fileName);
     }
 
 }
