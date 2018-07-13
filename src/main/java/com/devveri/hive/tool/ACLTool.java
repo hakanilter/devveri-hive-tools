@@ -41,7 +41,7 @@ public class ACLTool {
         StringBuffer buffer = new StringBuffer("#!/bin/bash\n\n");
         filteredResults.forEach(database -> buffer.append(String.format("hdfs dfs -setfacl --set -R %s /user/hive/warehouse/%s.db\n", permission, database)));
 
-        final String fileName = "acl-script.sh";
+        final String fileName = String.format("acl-script-%s.sh", System.currentTimeMillis());
         Files.write(Paths.get(fileName), buffer.toString().getBytes());
         System.out.println("Sentry script is saved as " + fileName);
     }

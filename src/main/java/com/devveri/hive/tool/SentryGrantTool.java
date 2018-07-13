@@ -44,7 +44,7 @@ public class SentryGrantTool {
         StringBuffer buffer = new StringBuffer();
         filteredResults.forEach(database -> buffer.append(String.format("GRANT %s ON DATABASE %s TO ROLE %s;\n", action, database, roleName)));
 
-        final String fileName = "sentry.sql";
+        final String fileName = String.format("sentry-%s.sql", System.currentTimeMillis());
         Files.write(Paths.get(fileName), buffer.toString().getBytes());
         System.out.println("Sentry script is saved as " + fileName);
     }
