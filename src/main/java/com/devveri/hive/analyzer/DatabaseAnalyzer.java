@@ -62,6 +62,7 @@ public class DatabaseAnalyzer {
         databaseMetadata.getTables().values().forEach(tableMetadata -> {
             try {
                 tableAnalyzer.updateStats(tableMetadata);
+                tableAnalyzer.updateStats(tableMetadata);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -12,7 +12,6 @@
 
     <title>Database Report</title>
 </head>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript" src="reports.json"></script>
 <script>
     function humanFileSize(bytes, si) {
@@ -82,7 +81,17 @@
                     parseInt(table.diskUsage*100.0/totalDiskSize) + "%\" aria-valuenow=\"" + 
                     parseInt(table.diskUsage*100.0/totalDiskSize) + "\" aria-valuemin=\"0\" aria-valuemax=\"100\"></div></div></td>");
                 document.write("<td>% " + parseFloat(table.diskUsage*100.0/totalDiskSize).toFixed(2) + "</td>");              
-                document.write("</tr>");     
+                document.write("</tr>");  
+
+                if (table.partitionSizeMap != undefined)
+                for (partition in table.partitionSizeMap) {
+                    document.write("<tr>");
+                    document.write("<td></td><td></td><td></td>");
+                    document.write("<td>" + partition + "</td><td></td>");                    
+                    document.write("<td style=\"text-align: right\">" + humanFileSize(table.partitionSizeMap[partition], true) + "</td>");
+                    document.write("<td></td><td></td>");
+                    document.write("</tr>");
+                }
             });
             document.write("<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>");
             document.write("</tbody></table></div>");            

@@ -4,6 +4,7 @@ import com.devveri.hive.util.HiveUtil;
 import com.google.gson.Gson;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class TableMetadata {
@@ -18,6 +19,8 @@ public class TableMetadata {
 
     private Set<String> phantomFolders;
     private Set<String> phantomPartitions;
+
+    private Map<String, Long> partitionSizeMap;
 
     private long diskUsage;
     private long rowCount;
@@ -130,6 +133,15 @@ public class TableMetadata {
 
     public TableMetadata setRowCount(long rowCount) {
         this.rowCount = rowCount;
+        return this;
+    }
+
+    public Map<String, Long> getPartitionSizeMap() {
+        return partitionSizeMap;
+    }
+
+    public TableMetadata setPartitionSizeMap(Map<String, Long> partitionSizeMap) {
+        this.partitionSizeMap = partitionSizeMap;
         return this;
     }
 

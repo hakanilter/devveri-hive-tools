@@ -11,11 +11,14 @@ import org.apache.hadoop.security.AccessControlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Analyzes table metadata using JDBC client, returns location and partition information
@@ -89,6 +92,24 @@ public class TableAnalyzer {
         tableMetadata.setDiskUsage(size);
         tableMetadata.setRowCount(rowCount);
         return tableMetadata;
+    }
+
+    public TableMetadata updatePartitionStats(TableMetadata tableMetadata) {
+        Map<String, Long> partitionSizeMap = tableMetadata.getPartitions().stream()
+                .collect(Collectors.toMap(partition -> partition,
+                        partition -> getDirectorySize(tableMetadata.getTableLocation() + "/" + partition)));
+        tableMetadata.setPartitionSizeMap(partitionSizeMap);
+        return tableMetadata;
+    }
+
+    private long getDirectorySize(String path) {
+        long size = -1;
+        try {
+            size = hdfs.getDirectorySize(path);
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
 }

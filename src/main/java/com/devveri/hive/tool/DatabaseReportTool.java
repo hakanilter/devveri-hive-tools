@@ -29,7 +29,7 @@ public class DatabaseReportTool {
         databaseAnalyzer.updateTableStats(databaseMetadata);
 
         final String fileName = database + ".json";
-        final String report = "var report = [" + databaseMetadata.toString() + "];";
+        final String report = "var reports = [" + databaseMetadata.toString() + "];";
         Files.write(Paths.get(fileName), report.getBytes());
         System.out.println("Report is saved as " + fileName);
     }
