@@ -1,5 +1,6 @@
 package com.devveri.hive.util;
 
+import com.devveri.hive.model.PartitionMetadata;
 import org.apache.commons.lang.math.NumberUtils;
 
 import java.util.*;
@@ -70,6 +71,38 @@ public final class PartitionUtil {
     public static List<String> getDropQueries(String table, Collection<String> locations) {
         return locations.stream()
                 .map(location -> getDropQuery(table, location))
+                .collect(Collectors.toList());
+    }
+
+    public static List<String> getMergeQueries(String database, String table, List<PartitionMetadata> partitions) {
+        if (partitions.size() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+        List<String> queries = new ArrayList<>(partitions.size());
+        for (int i = 0; i < partitions.size(); i++) {
+            String query = String.format("INSERT OVERWRITE TABLE %s.%s PARTITION (%s) SELECT * FROM %s.%s WHERE %s;",
+                    database,
+                    table,
+                    partitions.get(i).getPartitionColumns().keySet().stream()
+                            .collect(Collectors.joining(",")),
+                    database,
+                    table,
+                    partitions.get(i).getPartitionColumns().entrySet().stream()
+                            .map(e -> String.format(e.getValue() != null && e.getValue() instanceof String ?
+                                    "%s%s'%s'" : "%s%s%s", e.getKey(), e.getValue() == null ? " IS " : "=", e.getValue()))
+                            .collect(Collectors.joining(" AND ")));
+            queries.add(query);
+        }
+        return queries;
+    }
+
+    public static List<String> getComputeIncrementalStatsQueries(String database, String table, List<PartitionMetadata> partitions) {
+        return partitions.stream()
+                .map(p -> String.format("COMPUTE INCREMENTAL STATS %s.%s PARTITION (%s);",
+                        database, table, p.getPartitionColumns().entrySet().stream()
+                                .map(e -> String.format(e.getValue() != null && e.getValue() instanceof String ?
+                                        "%s%s'%s'" : "%s%s%s", e.getKey(), e.getValue() == null ? " IS " : "=", e.getValue()))
+                                .collect(Collectors.joining(", "))))
                 .collect(Collectors.toList());
     }
 

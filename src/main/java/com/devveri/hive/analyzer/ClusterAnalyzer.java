@@ -1,5 +1,6 @@
 package com.devveri.hive.analyzer;
 
+import com.devveri.hive.analyzer.base.BaseAnalyzer;
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.helper.HDFSHelper;
 import com.devveri.hive.helper.HiveHelper;
@@ -10,24 +11,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Analyzes a Hive cluster, returns all metadata information about all databases
  */
-public class ClusterAnalyzer {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DatabaseAnalyzer.class);
-
-    private HiveHelper hive;
-    private HDFSHelper hdfs;
+public class ClusterAnalyzer extends BaseAnalyzer {
 
     private DatabaseAnalyzer databaseAnalyzer;
 
     public ClusterAnalyzer(HiveConfig config) throws Exception {
-        this.hive = new HiveHelper(config);
-        this.hdfs = new HDFSHelper();
+        super(config);
         databaseAnalyzer = new DatabaseAnalyzer(hive, hdfs);
     }
 
     public ClusterAnalyzer(HiveHelper hive, HDFSHelper hdfs) {
-        this.hive = hive;
-        this.hdfs = hdfs;
+        super(hive, hdfs);
         databaseAnalyzer = new DatabaseAnalyzer(hive, hdfs);
     }
 
@@ -39,7 +33,7 @@ public class ClusterAnalyzer {
 
         // get database metadata
         hive.getDatabases().parallelStream().forEach(database -> {
-            LOG.info("Started analyzing database: " + database);
+            logger.info("Started analyzing database: " + database);
             try {
                 clusterMetadata.getDatabases().put(database, databaseAnalyzer.getMetadata(database));
             } catch (Exception e) {

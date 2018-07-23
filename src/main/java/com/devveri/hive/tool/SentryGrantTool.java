@@ -27,7 +27,7 @@ public class SentryGrantTool {
         final String filter = args[1];
         final String action = args[2];
         final String roleName = args[3];
-        HiveConfig hiveConfig = new HiveConfig().setUrl(String.format("jdbc:hive2://%s", hostAndPort));
+        HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
         HiveHelper hive = new HiveHelper(hiveConfig);
 
         System.out.println("Analyzing cluster...");

@@ -17,7 +17,7 @@ public class DatabaseReportTool {
 
         final String hostAndPort = args[0];
         final String database = args[1];
-        HiveConfig hiveConfig = new HiveConfig().setUrl(String.format("jdbc:hive2://%s", hostAndPort));
+        HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
 
         // get database metadata
         DatabaseAnalyzer databaseAnalyzer = new DatabaseAnalyzer(hiveConfig);

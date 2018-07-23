@@ -22,7 +22,7 @@ public class ClusterReportTool {
 
         final String hostAndPort = args[0];
         final String clusterName = args[1];
-        HiveConfig hiveConfig = new HiveConfig().setUrl(String.format("jdbc:hive2://%s", hostAndPort));
+        HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
 
         System.out.println("Analyzing cluster: " + clusterName);
 

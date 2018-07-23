@@ -1,5 +1,6 @@
 package com.devveri.hive.analyzer;
 
+import com.devveri.hive.analyzer.base.BaseAnalyzer;
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.helper.HDFSHelper;
 import com.devveri.hive.helper.HiveHelper;
@@ -15,24 +16,17 @@ import java.sql.SQLException;
 /**
  * Analyzes a Hive database and returns table and view metadata
  */
-public class DatabaseAnalyzer {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DatabaseAnalyzer.class);
-
-    private HiveHelper hive;
-    private HDFSHelper hdfs;
+public class DatabaseAnalyzer extends BaseAnalyzer {
 
     private TableAnalyzer tableAnalyzer;
 
     public DatabaseAnalyzer(HiveConfig config) throws Exception {
-        this.hive = new HiveHelper(config);
-        this.hdfs = new HDFSHelper();
+        super(config);
         tableAnalyzer = new TableAnalyzer(hive, hdfs);
     }
 
     public DatabaseAnalyzer(HiveHelper hive, HDFSHelper hdfs) {
-        this.hive = hive;
-        this.hdfs = hdfs;
+        super(hive, hdfs);
         tableAnalyzer = new TableAnalyzer(hive, hdfs);
     }
 
@@ -41,7 +35,7 @@ public class DatabaseAnalyzer {
 
         // get table metadata
         hive.getTables(database).forEach(table -> {
-            LOG.info("Started analyzing table: " + table);
+            logger.info("Started analyzing table: " + table);
             TableMetadata tableMetadata;
             try {
                 tableMetadata = tableAnalyzer.getMetadata(database, table);

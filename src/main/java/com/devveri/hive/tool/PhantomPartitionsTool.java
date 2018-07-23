@@ -22,7 +22,7 @@ public class PhantomPartitionsTool {
         final String hostAndPort = args[0];
         final String database = args[1];
         final String table = args[2];
-        HiveConfig hiveConfig = new HiveConfig().setUrl(String.format("jdbc:hive2://%s", hostAndPort));
+        HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
 
         TableAnalyzer analyzer = new TableAnalyzer(hiveConfig);
         TableMetadata tableMetadata = analyzer.getMetadata(database, table);

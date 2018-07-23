@@ -14,10 +14,9 @@ import java.util.*;
 
 public class HiveHelper {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass().getName());
+    protected final Logger logger = LoggerFactory.getLogger(getClass().getName());
 
-
-    private final HiveConfig config;
+    protected final HiveConfig config;
 
     public HiveHelper(HiveConfig config) throws ClassNotFoundException {
         this.config = config;
@@ -135,7 +134,7 @@ public class HiveHelper {
         return rowCount;
     }
 
-    private Connection getConnection(String url) throws SQLException {
+    protected Connection getConnection(String url) throws SQLException {
         return DriverManager.getConnection(url, config.getUser(), config.getPassword());
     }
 

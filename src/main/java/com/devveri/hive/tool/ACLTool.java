@@ -24,7 +24,7 @@ public class ACLTool {
         final String hostAndPort = args[0];
         final String filter = args[1];
         final String permission = args[2];
-        HiveConfig hiveConfig = new HiveConfig().setUrl(String.format("jdbc:hive2://%s", hostAndPort));
+        HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
         HiveHelper hive = new HiveHelper(hiveConfig);
 
         System.out.println("Analyzing cluster...");

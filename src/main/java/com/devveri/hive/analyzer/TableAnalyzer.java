@@ -1,5 +1,6 @@
 package com.devveri.hive.analyzer;
 
+import com.devveri.hive.analyzer.base.BaseAnalyzer;
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.helper.HDFSHelper;
 import com.devveri.hive.helper.HiveHelper;
@@ -23,21 +24,14 @@ import java.util.stream.Collectors;
 /**
  * Analyzes table metadata using JDBC client, returns location and partition information
  */
-public class TableAnalyzer {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TableAnalyzer.class);
-
-    private HiveHelper hive;
-    private HDFSHelper hdfs;
+public class TableAnalyzer extends BaseAnalyzer {
 
     public TableAnalyzer(HiveConfig config) throws Exception {
-        this.hive = new HiveHelper(config);
-        this.hdfs = new HDFSHelper();
+        super(config);
     }
 
     public TableAnalyzer(HiveHelper hive, HDFSHelper hdfs) {
-        this.hive = hive;
-        this.hdfs = hdfs;
+        super(hive, hdfs);
     }
 
     public TableMetadata getMetadata(String database, String table) throws Exception {
@@ -53,22 +47,22 @@ public class TableAnalyzer {
             try {
                 tableMetadata.setFolders(hdfs.getDeepestDirectories(tableMetadata.getTableLocation()));
             } catch (AccessControlException e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Don't have an access to foder: " + tableMetadata.getTableLocation(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Don't have an access to foder: " + tableMetadata.getTableLocation(), e);
                 } else {
                     System.err.println("Don't have an access to foder: " + tableMetadata.getTableLocation());
                 }
                 tableMetadata.setFolders(Collections.EMPTY_LIST);
             } catch (FileNotFoundException e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Folder doesn't exist: " + tableMetadata.getTableLocation(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Folder doesn't exist: " + tableMetadata.getTableLocation(), e);
                 } else {
                     System.err.println("Folder doesn't exist: " + tableMetadata.getTableLocation());
                 }
                 tableMetadata.setFolders(Collections.EMPTY_LIST);
             } catch (Exception e) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Failed to read directory information: " + tableMetadata.getTableLocation(), e);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Failed to read directory information: " + tableMetadata.getTableLocation(), e);
                 } else {
                     System.err.println("Failed to read directory information: " + tableMetadata.getTableLocation());
                 }
