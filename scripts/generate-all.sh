@@ -1,7 +1,10 @@
 #!/bin/bash
-CLUSTER=development
-HIVE_SERVER=localhost:10000
+source ./environment.sh
 
-echo Started generating DDL scripts...
-time java -cp lib/devveri-hive-tools-0.0.1-SNAPSHOT-dist.jar com.devveri.hive.tool.ClusterAnalyzerTool $HIVE_SERVER $CLUSTER > logs/generate-all.log 2>&1
-echo Done!
+CLUSTER=$1
+if [ -z "$1" ]
+  then
+    CLUSTER="cluster"
+fi
+
+time java $JAVA_OPTS -cp $JAR_FILE com.devveri.hive.tool.ClusterAnalyzerTool "$HIVE_SERVER" $CLUSTER
