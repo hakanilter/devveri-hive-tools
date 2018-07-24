@@ -57,7 +57,7 @@ public class TableHealthTool {
         // generate file
         StringBuffer buffer = new StringBuffer();
         if (defragQueries.size() > 0) {
-            buffer.append("-- This queries will merge small files\n");
+            buffer.append("-- These queries will merge small files\n");
             defragQueries.forEach(q -> {
                 buffer.append(q);
                 buffer.append("\n");
@@ -67,7 +67,7 @@ public class TableHealthTool {
             if (buffer.length() > 0) {
                 buffer.append("\n");
             }
-            buffer.append("-- This queries will update stats\n");
+            buffer.append("-- These queries will update stats\n");
             statQueries.forEach(q -> {
                 buffer.append(q);
                 buffer.append("\n");
