@@ -45,7 +45,7 @@ public class PartitionAnalyzer {
      */
     public List<PartitionMetadata> getPartitionsWithNoStats(String database, String table) throws SQLException {
         return getPartitionMetadata(database, table).stream()
-                .filter(p -> p.getFiles().equals(-1) || p.getIncrementalStats().equals(false))
+                .filter(p -> p.getFiles().equals(-1) && p.getIncrementalStats().equals(false))
                 .collect(Collectors.toList());
     }
 

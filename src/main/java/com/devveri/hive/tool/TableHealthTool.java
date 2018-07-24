@@ -12,19 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.devveri.hive.config.HiveConstants.*;
+
 /**
  * This tool uses Impala to retrieve partition metadata and analyzes it to identify possible problems.
  * It also generates required queries to fix these issues.
  */
 public class TableHealthTool {
-
-    private static final int MAX_PARTITION_COUNT = 10000;
-
-    private static final int MAX_PARTITION_DEPTH = 3;
-
-    private static final int MAX_ALLOWED_FILES_PER_PARTITION = 1;
-
-    private static final int COMPUTE_STATS_THRESHOLD = 50;
 
     public static void main(String[] args) throws Exception {
         new TableHealthTool().run(args);

@@ -2,12 +2,12 @@ package com.devveri.hive.model;
 
 import com.google.gson.Gson;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class PartitionMetadata {
 
-    private Map<String, Object> partitionColumns = new TreeMap<>();
+    private Map<String, Object> partitionColumns = new LinkedHashMap<>();
 
     private Integer rows;
 
