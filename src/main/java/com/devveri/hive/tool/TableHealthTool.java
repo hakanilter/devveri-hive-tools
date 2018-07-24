@@ -108,7 +108,7 @@ public class TableHealthTool {
         boolean hasNoStats = partitionsWithNoStats.size() > 0;
         if (hasNoStats) {
             double rate = (double) partitionsWithNoStats.size() / (double) numberOfPartitions * 100;
-            System.err.printf("Checking table stats... [FAILED], Found %d of %d partitions (%%%d) has no stats.\n", partitionsWithNoStats.size(), numberOfPartitions, (int) rate);
+            System.err.printf("Checking table stats... [FAILED], Found %d of %d partitions (%%%d) have no stats.\n", partitionsWithNoStats.size(), numberOfPartitions, (int) rate);
             if (rate > COMPUTE_STATS_THRESHOLD) {
                 return Collections.singletonList(String.format("COMPUTE INCREMENTAL STATS %s.%s;", database, table));
             } else {
@@ -125,7 +125,7 @@ public class TableHealthTool {
         boolean fragmentation = fragmentedPartitions.size() > 0;
         if (fragmentation) {
             double rate = (double) fragmentedPartitions.size() / (double) numberOfPartitions * 100;
-            System.err.printf("Checking small files... [FAILED], Found %d of %d partitions (%%%d) has fragmented.\n", fragmentedPartitions.size(), numberOfPartitions, (int) rate);
+            System.err.printf("Checking small files... [FAILED], Found %d of %d partitions (%%%d) are fragmented.\n", fragmentedPartitions.size(), numberOfPartitions, (int) rate);
             return PartitionUtil.getMergeQueries(database, table, fragmentedPartitions);
         } else {
             System.out.println("Checking small files... [PASSED]");
