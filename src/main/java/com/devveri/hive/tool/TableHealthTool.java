@@ -21,32 +21,26 @@ import static com.devveri.hive.config.HiveConstants.*;
 public class TableHealthTool {
 
     public static void main(String[] args) throws Exception {
-        new TableHealthTool().run(args);
-    }
-
-    private String database, table;
-
-    private PartitionAnalyzer partitionAnalyzer;
-
-    public void run(String[] args) throws Exception {
         if (args.length != 3) {
             System.err.println("Invalid usage, try:\nPartitionRepairTool <hive-host:port> <database> <table>");
             System.exit(-1);
         }
+        new TableHealthTool().run(args[0], args[1], args[2]);
+    }
 
-        final String hostAndPort = args[0];
-        this.database = args[1];
-        this.table = args[2];
+    protected PartitionAnalyzer partitionAnalyzer;
+
+    private void run(final String hostAndPort, final String database, final String table) throws Exception {
         this.partitionAnalyzer = new PartitionAnalyzer(new HiveConfig().setUrl(hostAndPort));
 
         System.out.printf("Analyzing table %s.%s\n", database, table);
 
         // check table health
-        int numberOfPartitions = checkNumberOfPartitions();
-        checkPartitionDepth();
-        List<String> defragQueries = checkFragmentation(numberOfPartitions);
-        List<String> statQueries = checkStats(numberOfPartitions);
-        checkDefaultValues();
+        int numberOfPartitions = checkNumberOfPartitions(database, table);
+        checkPartitionDepth(database, table);
+        List<String> defragQueries = checkFragmentation(database, table, numberOfPartitions);
+        List<String> statQueries = checkStats(database, table, numberOfPartitions);
+        checkDefaultValues(database, table);
 
         // generate file
         StringBuffer buffer = new StringBuffer();
@@ -69,13 +63,13 @@ public class TableHealthTool {
         }
 
         if (buffer.length() > 0) {
-            final String fileName = String.format("fix-%s.sql", System.currentTimeMillis());
+            final String fileName = String.format("table-fix-%s.sql", System.currentTimeMillis());
             Files.write(Paths.get(fileName), buffer.toString().getBytes());
             System.out.println("Table fix queries are saved as " + fileName);
         }
     }
 
-    private int checkNumberOfPartitions() throws Exception {
+    protected int checkNumberOfPartitions(String database, String table) throws Exception {
         int numberOfPartitions = partitionAnalyzer.getNumberOfPartitions(database, table);
         boolean tooManyPartitions = numberOfPartitions > MAX_PARTITION_COUNT;
         if (tooManyPartitions) {
@@ -86,7 +80,7 @@ public class TableHealthTool {
         return numberOfPartitions;
     }
 
-    private void checkPartitionDepth() throws Exception  {
+    protected void checkPartitionDepth(String database, String table) throws Exception  {
         Collection<String> partitionColumns = partitionAnalyzer.getPartitionColumns(database, table);
         boolean deepPartitioning = partitionColumns.size() > MAX_PARTITION_DEPTH;
         if (deepPartitioning) {
@@ -97,7 +91,7 @@ public class TableHealthTool {
         }
     }
 
-    private List<String> checkStats(int numberOfPartitions) throws Exception {
+    protected List<String> checkStats(String database, String table, int numberOfPartitions) throws Exception {
         List<PartitionMetadata> partitionsWithNoStats = partitionAnalyzer.getPartitionsWithNoStats(database, table);
         boolean hasNoStats = partitionsWithNoStats.size() > 0;
         if (hasNoStats) {
@@ -114,7 +108,7 @@ public class TableHealthTool {
         return Collections.EMPTY_LIST;
     }
 
-    private List<String> checkFragmentation(int numberOfPartitions) throws Exception {
+    protected List<String> checkFragmentation(String database, String table, int numberOfPartitions) throws Exception {
         List<PartitionMetadata> fragmentedPartitions = partitionAnalyzer.getFragmentedPartitions(database, table, MAX_ALLOWED_FILES_PER_PARTITION);
         boolean fragmentation = fragmentedPartitions.size() > 0;
         if (fragmentation) {
@@ -127,7 +121,7 @@ public class TableHealthTool {
         return Collections.EMPTY_LIST;
     }
 
-    private void checkDefaultValues() throws Exception {
+    protected void checkDefaultValues(String database, String table) throws Exception {
         List<PartitionMetadata> partitionsWithDefaultValue = partitionAnalyzer.getDefaultPartitions(database, table);
         boolean hasDefaultValue = partitionsWithDefaultValue.size() > 0;
         if (hasDefaultValue) {
