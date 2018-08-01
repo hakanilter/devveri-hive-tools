@@ -64,7 +64,7 @@ public class TableHealthTool {
 
         if (buffer.length() > 0) {
             final String fileName = String.format("table-fix-%s.sql", System.currentTimeMillis());
-            Files.write(Paths.get(fileName), buffer.toString().getBytes());
+            Files.write(Paths.get(fileName), ("SET num_nodes=1;\n" + buffer.toString()).getBytes());
             System.out.println("Table fix queries are saved as " + fileName);
         }
     }

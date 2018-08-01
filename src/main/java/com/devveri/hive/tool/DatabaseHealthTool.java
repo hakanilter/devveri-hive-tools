@@ -65,7 +65,7 @@ public class DatabaseHealthTool extends TableHealthTool {
 
         if (buffer.length() > 0) {
             final String fileName = String.format("database-fix-%s.sql", System.currentTimeMillis());
-            Files.write(Paths.get(fileName), buffer.toString().getBytes());
+            Files.write(Paths.get(fileName), ("SET num_nodes=1;\n" + buffer.toString()).getBytes());
             System.out.println("Database fix queries are saved as " + fileName);
         }
     }
