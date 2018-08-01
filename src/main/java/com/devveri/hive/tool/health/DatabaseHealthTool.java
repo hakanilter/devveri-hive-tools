@@ -1,12 +1,8 @@
-package com.devveri.hive.tool;
+package com.devveri.hive.tool.health;
 
-import com.devveri.hive.analyzer.DatabaseAnalyzer;
 import com.devveri.hive.analyzer.PartitionAnalyzer;
-import com.devveri.hive.analyzer.TableAnalyzer;
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.helper.HiveHelper;
-import com.devveri.hive.model.DatabaseMetadata;
-import com.devveri.hive.model.TableMetadata;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

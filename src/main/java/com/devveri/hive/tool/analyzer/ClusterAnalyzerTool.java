@@ -1,10 +1,8 @@
-package com.devveri.hive.tool;
+package com.devveri.hive.tool.analyzer;
 
 import com.devveri.hive.analyzer.ClusterAnalyzer;
-import com.devveri.hive.analyzer.DatabaseAnalyzer;
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.model.ClusterMetadata;
-import com.devveri.hive.model.DatabaseMetadata;
 import com.devveri.hive.util.DDLUtil;
 
 import java.io.File;
@@ -12,7 +10,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class ClusterReportTool {
+/**
+ * This tool analyzes the whole cluster and generates DDL scripts for all databases, tables, etc.
+ */
+public class ClusterAnalyzerTool {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
@@ -31,21 +32,20 @@ public class ClusterReportTool {
         ClusterMetadata clusterMetadata = clusterAnalyzer.getMetadata(clusterName);
 
         System.out.println("Found " + clusterMetadata.getDatabases().size() + " databases");
+        System.out.println("Creating DDL scripts for the cluster...");
 
-        System.out.println("Updating statistics...");
-        clusterAnalyzer.updateStatistics(clusterMetadata);
-
-        final String fileName = "reports.json";
-        StringBuffer buffer = new StringBuffer();
-        for (DatabaseMetadata databaseMetadata : clusterMetadata.getDatabases().values()) {
-            if (buffer.length() > 0) {
-                buffer.append(",");
+        // generate ddl scripts
+        new File(clusterName).mkdirs();
+        clusterMetadata.getDatabases().values().stream().forEach(databaseMetadata -> {
+            String script = DDLUtil.generate(databaseMetadata);
+            final String fileName = clusterName + File.separator + databaseMetadata.getName() + ".sql";
+            try {
+                Files.write(Paths.get(fileName), script.getBytes());
+                System.out.println("DDL script is saved in " + fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            buffer.append(databaseMetadata.toString());
-        }
-        final String reports = "var reports = [" + buffer.toString() + "];";
-        Files.write(Paths.get(fileName), reports.getBytes());
-        System.out.println("Report is saved as " + fileName);
+        });
     }
 
 }

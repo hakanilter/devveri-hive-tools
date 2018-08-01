@@ -7,6 +7,7 @@ The missing tools for analyzing tables and partitions in Hive
 
 This tool reads table metadata and checks table health and generates scripts to fix the problems.
 
+
 - **Database Health Tool:** 
 
 Same like Table Health tool but this runs for whole database.

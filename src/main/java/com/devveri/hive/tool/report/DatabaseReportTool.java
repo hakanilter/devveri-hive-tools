@@ -1,4 +1,4 @@
-package com.devveri.hive.tool;
+package com.devveri.hive.tool.report;
 
 import com.devveri.hive.analyzer.DatabaseAnalyzer;
 import com.devveri.hive.config.HiveConfig;

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source ./environment.sh
 
 DATABASE=$1
@@ -15,4 +15,4 @@ if [ -z "$2" ]
     exit
 fi
 
-time java $JAVA_OPTS -cp $JAR_FILE com.devveri.hive.tool.TableHealthTool "$IMPALA_SERVER" $DATABASE $TABLE
+time java $JAVA_OPTS -cp $JAR_FILE com.devveri.hive.tool.health.TableHealthTool "$IMPALA_SERVER" $DATABASE $TABLE

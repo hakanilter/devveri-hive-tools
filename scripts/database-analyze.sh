@@ -8,4 +8,4 @@ if [ -z "$1" ]
     exit
 fi
 
-time java $JAVA_OPTS -cp $JAR_FILE com.devveri.hive.tool.report.DatabaseReportTool "$HIVE_SERVER" $DATABASE
+time java $JAVA_OPTS -cp $JAR_FILE com.devveri.hive.tool.analyzer.DatabaseAnalyzerTool "$HIVE_SERVER" $DATABASE

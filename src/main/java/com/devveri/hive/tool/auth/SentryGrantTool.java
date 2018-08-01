@@ -1,4 +1,4 @@
-package com.devveri.hive.tool;
+package com.devveri.hive.tool.auth;
 
 import com.devveri.hive.config.HiveConfig;
 import com.devveri.hive.helper.HiveHelper;
@@ -10,20 +10,23 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * This tool generates ACL commands for all database locations
+ * This tool generates GRANT commands for all databases
  * It allows you to use REGEX patterns to match for given databases
+ * Example:
+ *      SentryGrantTool "locahost:10000" "[w]*_temp" "ALL" "my_role"
  */
-public class ACLTool {
+public class SentryGrantTool {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 3) {
-            System.err.println("Invalid usage, try:\nACLTool <hive-host:port> <regex-filter|*> <permission>");
+        if (args.length != 4) {
+            System.err.println("Invalid usage, try:\nSentryGrantTool <hive-host:port> <regex-filter|*> <action> <role-name>");
             System.exit(-1);
         }
 
         final String hostAndPort = args[0];
         final String filter = args[1];
-        final String permission = args[2];
+        final String action = args[2];
+        final String roleName = args[3];
         HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
         HiveHelper hive = new HiveHelper(hiveConfig);
 
@@ -37,11 +40,11 @@ public class ACLTool {
         Set<String> filteredResults = filter.equals("*") ? databases :
                 databases.stream().filter(pattern.asPredicate()).collect(Collectors.toSet());
 
-        // TODO get hive warehouse folder from the configuration
-        StringBuffer buffer = new StringBuffer("#!/bin/bash\n\n");
-        filteredResults.forEach(database -> buffer.append(String.format("hdfs dfs -setfacl --set -R %s /user/hive/warehouse/%s.db\n", permission, database)));
+        // generate file
+        StringBuffer buffer = new StringBuffer();
+        filteredResults.forEach(database -> buffer.append(String.format("GRANT %s ON DATABASE %s TO ROLE %s;\n", action, database, roleName)));
 
-        final String fileName = String.format("acl-script-%s.sh", System.currentTimeMillis());
+        final String fileName = String.format("sentry-%s.sql", System.currentTimeMillis());
         Files.write(Paths.get(fileName), buffer.toString().getBytes());
         System.out.println("Sentry script is saved as " + fileName);
     }

@@ -1,4 +1,4 @@
-package com.devveri.hive.tool;
+package com.devveri.hive.tool.partition;
 
 import com.devveri.hive.analyzer.TableAnalyzer;
 import com.devveri.hive.config.HiveConfig;
