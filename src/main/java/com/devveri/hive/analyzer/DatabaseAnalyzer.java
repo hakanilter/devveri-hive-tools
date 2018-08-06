@@ -56,7 +56,7 @@ public class DatabaseAnalyzer extends BaseAnalyzer {
         databaseMetadata.getTables().values().forEach(tableMetadata -> {
             try {
                 tableAnalyzer.updateStats(tableMetadata);
-                tableAnalyzer.updateStats(tableMetadata);
+                tableAnalyzer.updatePartitionStats(tableMetadata);
             } catch (Exception e) {
                 e.printStackTrace();
             }

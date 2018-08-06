@@ -16,13 +16,14 @@ import java.nio.file.Paths;
 public class ClusterAnalyzerTool {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
-            System.err.println("Invalid usage, try:\nClusterAnalyzerTool <hive-host:port> <cluster-name>");
+        if (args.length < 2 || args.length > 3) {
+            System.err.println("Invalid usage, try:\nClusterAnalyzerTool <hive-host:port> <cluster-name> <include-partitions:true>");
             System.exit(-1);
         }
 
         final String hostAndPort = args[0];
         final String clusterName = args[1];
+        final boolean includePartitions = args.length != 3 || Boolean.parseBoolean(args[2]);
         HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
 
         System.out.println("Analyzing cluster: " + clusterName);
@@ -37,7 +38,7 @@ public class ClusterAnalyzerTool {
         // generate ddl scripts
         new File(clusterName).mkdirs();
         clusterMetadata.getDatabases().values().stream().forEach(databaseMetadata -> {
-            String script = DDLUtil.generate(databaseMetadata);
+            String script = DDLUtil.generate(databaseMetadata, includePartitions);
             final String fileName = clusterName + File.separator + databaseMetadata.getName() + ".sql";
             try {
                 Files.write(Paths.get(fileName), script.getBytes());
