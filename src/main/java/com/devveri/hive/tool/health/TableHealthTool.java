@@ -70,7 +70,10 @@ public class TableHealthTool {
     }
 
     protected int checkNumberOfPartitions(String database, String table) throws Exception {
+        int numberOfFiles = partitionAnalyzer.getNumberOfFiles(database, table);
         int numberOfPartitions = partitionAnalyzer.getNumberOfPartitions(database, table);
+        System.out.printf("Total %d files found in %d partitions\n", numberOfFiles, numberOfPartitions);
+
         boolean tooManyPartitions = numberOfPartitions > MAX_PARTITION_COUNT;
         if (tooManyPartitions) {
             System.err.printf("Checking partition count... [FAILED], Found %d partitions. More than %d is considered as unhealthy. You should consider changing your partition strategy.\n", numberOfPartitions, MAX_PARTITION_COUNT);

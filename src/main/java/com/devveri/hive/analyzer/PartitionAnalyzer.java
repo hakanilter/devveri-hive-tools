@@ -34,10 +34,18 @@ public class PartitionAnalyzer {
     }
 
     /**
+     * Returns total number of files
+     */
+    public int getNumberOfFiles(String database, String table) throws SQLException {
+        return getPartitionMetadata(database, table).stream().mapToInt(x -> x.getFiles()).sum();
+    }
+
+    /**
      * Returns partition columns
      */
     public Collection<String> getPartitionColumns(String database, String table) throws SQLException {
-        return getPartitionMetadata(database, table).get(0).getPartitionColumns().keySet();
+        List<PartitionMetadata> partitions = getPartitionMetadata(database, table);
+        return partitions.size() == 0 ? Collections.EMPTY_LIST : partitions.get(0).getPartitionColumns().keySet();
     }
 
     /**
