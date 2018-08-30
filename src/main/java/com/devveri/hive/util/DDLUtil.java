@@ -24,7 +24,7 @@ public final class DDLUtil {
         buffer.append(" views\n");
 
         // create database
-        buffer.append(String.format("CREATE DATABASE %s;\nUSE %s;\n\n",
+        buffer.append(String.format("CREATE DATABASE IF NOT EXISTS %s;\nUSE %s;\n\n",
                 databaseMetadata.getName(), databaseMetadata.getName()));
 
         // add table definitions
