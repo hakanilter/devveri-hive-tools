@@ -2,6 +2,7 @@ package com.devveri.hive.tool.health;
 
 import com.devveri.hive.analyzer.PartitionAnalyzer;
 import com.devveri.hive.config.HiveConfig;
+import com.devveri.hive.config.HiveConstants;
 import com.devveri.hive.model.PartitionMetadata;
 import com.devveri.hive.util.PartitionUtil;
 
@@ -12,7 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.devveri.hive.config.HiveConstants.*;
+import static com.devveri.hive.config.HiveConstants.HIVE_OPTIONS;
+import static com.devveri.hive.config.HiveConstants.IMPALA_OPTIONS;
 
 /**
  * This tool uses Impala to retrieve partition metadata and analyzes it to identify possible problems.
@@ -21,16 +23,24 @@ import static com.devveri.hive.config.HiveConstants.*;
 public class TableHealthTool {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 3) {
-            System.err.println("Invalid usage, try:\nPartitionRepairTool <hive-host:port> <database> <table>");
+        if (args.length < 3 || args.length > 4) {
+            System.err.println("Invalid usage, try:\nPartitionRepairTool <hive-host:port> <database> <table> <file-name=optional>");
             System.exit(-1);
         }
-        new TableHealthTool().run(args[0], args[1], args[2]);
+        new TableHealthTool().run(args[0], args[1], args[2], args.length == 4 ? args[3] : null);
     }
 
     protected PartitionAnalyzer partitionAnalyzer;
 
-    private void run(final String hostAndPort, final String database, final String table) throws Exception {
+    // config
+    private final boolean useHive = System.getProperty("useHive") == null ? false : Boolean.parseBoolean(System.getProperty("useHive"));
+    private final int maxPartitionCount = System.getProperty("maxPartitionCount") == null ? HiveConstants.MAX_PARTITION_COUNT : Integer.parseInt(System.getProperty("maxPartitionCount"));
+    private final int maxPartitionDepth = System.getProperty("maxPartitionDepth") == null ? HiveConstants.MAX_PARTITION_DEPTH : Integer.parseInt(System.getProperty("maxPartitionDepth"));
+    private final int maxFilesPerPartition = System.getProperty("maxFilesPerPartition") == null ? HiveConstants.MAX_ALLOWED_FILES_PER_PARTITION : Integer.parseInt(System.getProperty("maxFilesPerPartition"));
+    //private final long avgFileSizePerPartition = System.getProperty("avgFileSizePerPartition") == null ? HiveConstants.AVG_FILE_SIZE_PER_PARTITION : Long.parseLong(System.getProperty("avgFileSizePerPartition"));
+    private final int computeStatsThreshold = System.getProperty("computeStatsThreshold") == null ? HiveConstants.COMPUTE_STATS_THRESHOLD : Integer.parseInt(System.getProperty("computeStatsThreshold"));
+
+    private void run(final String hostAndPort, final String database, final String table, final String optionalFileName) throws Exception {
         this.partitionAnalyzer = new PartitionAnalyzer(new HiveConfig().setUrl(hostAndPort));
 
         System.out.printf("Analyzing table %s.%s\n", database, table);
@@ -63,8 +73,8 @@ public class TableHealthTool {
         }
 
         if (buffer.length() > 0) {
-            final String fileName = String.format("table-fix-%s.sql", System.currentTimeMillis());
-            Files.write(Paths.get(fileName), ("SET num_nodes=1;\n" + buffer.toString()).getBytes());
+            final String fileName = optionalFileName == null ? String.format("table-fix-%s.sql", System.currentTimeMillis()) : optionalFileName;
+            Files.write(Paths.get(fileName), ((useHive ? HIVE_OPTIONS : IMPALA_OPTIONS) + buffer.toString()).getBytes());
             System.out.println("Table fix queries are saved as " + fileName);
         }
     }
@@ -74,9 +84,9 @@ public class TableHealthTool {
         int numberOfPartitions = partitionAnalyzer.getNumberOfPartitions(database, table);
         System.out.printf("Total %d files found in %d partitions\n", numberOfFiles, numberOfPartitions);
 
-        boolean tooManyPartitions = numberOfPartitions > MAX_PARTITION_COUNT;
+        boolean tooManyPartitions = numberOfPartitions > maxPartitionCount;
         if (tooManyPartitions) {
-            System.err.printf("Checking partition count... [FAILED], Found %d partitions. More than %d is considered as unhealthy. You should consider changing your partition strategy.\n", numberOfPartitions, MAX_PARTITION_COUNT);
+            System.err.printf("Checking partition count... [FAILED], Found %d partitions. More than %d is considered as unhealthy. You should consider changing your partition strategy.\n", numberOfPartitions, maxPartitionCount);
         } else {
             System.out.println("Checking partition count... [PASSED]");
         }
@@ -85,7 +95,7 @@ public class TableHealthTool {
 
     protected void checkPartitionDepth(String database, String table) throws Exception  {
         Collection<String> partitionColumns = partitionAnalyzer.getPartitionColumns(database, table);
-        boolean deepPartitioning = partitionColumns.size() > MAX_PARTITION_DEPTH;
+        boolean deepPartitioning = partitionColumns.size() > maxPartitionDepth;
         if (deepPartitioning) {
             String partitions = partitionColumns.stream().collect(Collectors.joining("/"));
             System.err.printf("Checking partition depth... [FAILED], Found %d levels of partitioning (%s). You should consider changing your partition strategy to minimize number of small files and increase query performance.\n", partitionColumns.size(), partitions);
@@ -100,7 +110,7 @@ public class TableHealthTool {
         if (hasNoStats) {
             double rate = (double) partitionsWithNoStats.size() / (double) numberOfPartitions * 100;
             System.err.printf("Checking table stats... [FAILED], Found %d of %d partitions (%%%d) have no stats.\n", partitionsWithNoStats.size(), numberOfPartitions, (int) rate);
-            if (rate > COMPUTE_STATS_THRESHOLD) {
+            if (rate > computeStatsThreshold) {
                 return Collections.singletonList(String.format("COMPUTE INCREMENTAL STATS %s.%s;", database, table));
             } else {
                 return PartitionUtil.getComputeIncrementalStatsQueries(database, table, partitionsWithNoStats);
@@ -112,7 +122,7 @@ public class TableHealthTool {
     }
 
     protected List<String> checkFragmentation(String database, String table, int numberOfPartitions) throws Exception {
-        List<PartitionMetadata> fragmentedPartitions = partitionAnalyzer.getFragmentedPartitions(database, table, MAX_ALLOWED_FILES_PER_PARTITION);
+        List<PartitionMetadata> fragmentedPartitions = partitionAnalyzer.getFragmentedPartitionsByFileCount(database, table, maxFilesPerPartition);
         boolean fragmentation = fragmentedPartitions.size() > 0;
         if (fragmentation) {
             double rate = (double) fragmentedPartitions.size() / (double) numberOfPartitions * 100;

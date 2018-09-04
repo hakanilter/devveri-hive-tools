@@ -8,4 +8,6 @@ if [ -z "$1" ]
     exit
 fi
 
-time java $JAVA_OPTS -cp $JAR_FILE com.devveri.hive.tool.health.DatabaseHealthTool "$IMPALA_SERVER" $DATABASE
+FILE_NAME=$2
+
+time java $JAVA_OPTS -cp $JAR_FILE com.devveri.hive.tool.health.DatabaseHealthTool "$IMPALA_SERVER" $DATABASE $FILE_NAME

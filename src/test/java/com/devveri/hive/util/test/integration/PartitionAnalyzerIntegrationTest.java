@@ -30,7 +30,7 @@ public class PartitionAnalyzerIntegrationTest extends BaseIntegrationTest {
     @Test
     public void testFragmentedPartitions() throws SQLException {
         final int maxAllowedFileCountPerPartition = 1;
-        List<PartitionMetadata> fragmentedPartitions = partitionAnalyzer.getFragmentedPartitions("default", "test_table", maxAllowedFileCountPerPartition);
+        List<PartitionMetadata> fragmentedPartitions = partitionAnalyzer.getFragmentedPartitionsByFileCount("default", "test_table", maxAllowedFileCountPerPartition);
         assertNotNull(fragmentedPartitions);
         assertTrue(fragmentedPartitions.size() > 0);
     }

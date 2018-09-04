@@ -60,9 +60,21 @@ public class PartitionAnalyzer {
     /**
      * Returns fragmented partitions
      */
-    public List<PartitionMetadata> getFragmentedPartitions(String database, String table, int maxAllowedFileCountPerPartition) throws SQLException {
+    public List<PartitionMetadata> getFragmentedPartitions(String database, String table, int maxAllowedFileCountPerPartition, long avgFileSize) throws SQLException {
+        return getPartitionMetadata(database, table).stream()
+                .filter(p -> ((p.getSize() / p.getFiles()) < avgFileSize) && (p.getFiles() > maxAllowedFileCountPerPartition))
+                .collect(Collectors.toList());
+    }
+
+    public List<PartitionMetadata> getFragmentedPartitionsByFileCount(String database, String table, int maxAllowedFileCountPerPartition) throws SQLException {
         return getPartitionMetadata(database, table).stream()
                 .filter(p -> p.getFiles() > maxAllowedFileCountPerPartition)
+                .collect(Collectors.toList());
+    }
+
+    public List<PartitionMetadata> getFragmentedPartitionsBySize(String database, String table, long avgFileSize) throws SQLException {
+        return getPartitionMetadata(database, table).stream()
+                .filter(p -> (p.getSize() / p.getFiles()) < avgFileSize)
                 .collect(Collectors.toList());
     }
 
