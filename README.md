@@ -229,12 +229,22 @@ sys     0m0.297s
 
 - **Partition Analyzer Tool:** 
 
-This tool reads table metadata and shows any missing partition or folder. 
+This tool reads table metadata and checks the existing folders on HDFS, shows any missing partition or folder after comparing these two metadata. 
 
-- **Partition Repair Tool:**
+```bash
+$ ./partition-analyzer.sh default nyse
+2018-09-05 13:56:43 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:10000
+2018-09-05 13:56:43 INFO  Utils:383 - Resolved authority: quickstart.cloudera:10000
+2018-09-05 13:56:44 INFO  HiveHelper:94 - Query "SHOW CREATE TABLE default.nyse" execution took 573 ms
+2018-09-05 13:56:44 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+2018-09-05 13:56:46 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:10000
+2018-09-05 13:56:46 INFO  Utils:383 - Resolved authority: quickstart.cloudera:10000
+2018-09-05 13:56:46 INFO  HiveHelper:115 - Query "SHOW PARTITIONS default.nyse" execution took 98 ms
 
-This tool checks HDFS and finds missing partitions and provides the alter queries. 
+-- Found 1 ghost partition(s):
+ALTER TABLE nyse DROP IF EXISTS PARTITION (stock_date=2000-01-03);
 
-- **Phantom Partitions Tool:** 
+-- Found 1 ghost folder(s):
+ALTER TABLE nyse ADD PARTITION (stock_date='2000-01-01') LOCATION 'stock_date=2000-01-01';
+```
 
-This tool finds phantom (non existing) partitions and generates drop partition queries for them.

@@ -17,8 +17,8 @@ public class TableMetadata {
     private List<String> folders;
     private List<String> partitions;
 
-    private Set<String> phantomFolders;
-    private Set<String> phantomPartitions;
+    private Set<String> ghostFolders;
+    private Set<String> ghostPartitions;
 
     private Map<String, Long> partitionSizeMap;
 
@@ -100,21 +100,21 @@ public class TableMetadata {
         return this;
     }
 
-    public Set<String> getPhantomFolders() {
-        return phantomFolders;
+    public Set<String> getGhostFolders() {
+        return ghostFolders;
     }
 
-    public TableMetadata setPhantomFolders(Set<String> phantomFolders) {
-        this.phantomFolders = phantomFolders;
+    public TableMetadata setGhostFolders(Set<String> ghostFolders) {
+        this.ghostFolders = ghostFolders;
         return this;
     }
 
-    public Set<String> getPhantomPartitions() {
-        return phantomPartitions;
+    public Set<String> getGhostPartitions() {
+        return ghostPartitions;
     }
 
-    public TableMetadata setPhantomPartitions(Set<String> phantomPartitions) {
-        this.phantomPartitions = phantomPartitions;
+    public TableMetadata setGhostPartitions(Set<String> ghostPartitions) {
+        this.ghostPartitions = ghostPartitions;
         return this;
     }
 

@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HDFSHelper {
 
@@ -43,7 +44,11 @@ public class HDFSHelper {
 				folders.add(path.replaceAll(dirName + "/", ""));
 			}
 		}
-		return folders;
+
+		// filter invisible folders
+		return folders.stream()
+				.filter(path -> !path.startsWith("_") && !path.startsWith("."))
+				.collect(Collectors.toList());
 	}
 
 	private int getDeepestDirectories(String dirName, List<String> fileList) throws IOException, URISyntaxException {

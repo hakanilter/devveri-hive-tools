@@ -63,7 +63,13 @@ public final class PartitionUtil {
             }
             buffer.append(entry.getKey());
             buffer.append("=");
-            buffer.append(entry.getValue());
+            if (NumberUtils.isNumber(entry.getValue())) {
+                buffer.append(entry.getValue());
+            } else {
+                buffer.append("'");
+                buffer.append(entry.getValue());
+                buffer.append("'");
+            }
         }
         return String.format("ALTER TABLE %s DROP IF EXISTS PARTITION (%s);", table, buffer.toString());
     }

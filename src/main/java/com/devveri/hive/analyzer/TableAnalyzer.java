@@ -9,10 +9,7 @@ import com.devveri.hive.util.CollectionUtil;
 import com.devveri.hive.util.HdfsUtil;
 import com.devveri.hive.util.HiveUtil;
 import org.apache.hadoop.security.AccessControlException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -70,8 +67,8 @@ public class TableAnalyzer extends BaseAnalyzer {
             }
             if (tableMetadata.isPartitioned()) {
                 tableMetadata.setPartitions(hive.getPartitionLocations(database, table));
-                tableMetadata.setPhantomFolders(CollectionUtil.diff(tableMetadata.getFolders(), tableMetadata.getPartitions()));
-                tableMetadata.setPhantomPartitions(CollectionUtil.diff(tableMetadata.getPartitions(), tableMetadata.getFolders()));
+                tableMetadata.setGhostFolders(CollectionUtil.diff(tableMetadata.getFolders(), tableMetadata.getPartitions()));
+                tableMetadata.setGhostPartitions(CollectionUtil.diff(tableMetadata.getPartitions(), tableMetadata.getFolders()));
             } else {
                 tableMetadata.setPartitions(Collections.EMPTY_LIST);
             }

@@ -22,14 +22,6 @@ import static com.devveri.hive.config.HiveConstants.IMPALA_OPTIONS;
  */
 public class TableHealthTool {
 
-    public static void main(String[] args) throws Exception {
-        if (args.length < 3 || args.length > 4) {
-            System.err.println("Invalid usage, try:\nPartitionRepairTool <hive-host:port> <database> <table> <file-name=optional>");
-            System.exit(-1);
-        }
-        new TableHealthTool().run(args[0], args[1], args[2], args.length == 4 ? args[3] : null);
-    }
-
     protected PartitionAnalyzer partitionAnalyzer;
 
     // config
@@ -142,6 +134,14 @@ public class TableHealthTool {
         } else {
             System.out.println("Checking null values... [PASSED]");
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        if (args.length < 3 || args.length > 4) {
+            System.err.println("Invalid usage, try:\nPartitionRepairTool <hive-host:port> <database> <table> <file-name=optional>");
+            System.exit(-1);
+        }
+        new TableHealthTool().run(args[0], args[1], args[2], args.length == 4 ? args[3] : null);
     }
 
 }
