@@ -179,8 +179,8 @@ If you run these queries and check the table again, you will see that small file
 ```bash
 $ ./table-health.sh default nyse
 Analyzing table default.nyse
-2018-09-05 09:07:28 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-05 09:07:28 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-05 09:07:28 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-05 09:07:28 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-05 09:07:29 INFO  ImpalaHelper:57 - Query "REFRESH default.nyse; SHOW PARTITIONS default.nyse" execution took 845 ms
 Total 519 files found in 519 partitions
 Checking partition count... [PASSED]
@@ -201,13 +201,13 @@ Same like Table Health tool but this checks the whole database and generate scri
 ```bash
 $ ./database-health.sh default
 Analyzing database default
-2018-09-05 08:02:43 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-05 08:02:43 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-05 08:02:43 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-05 08:02:43 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-05 08:02:43 INFO  HiveHelper:73 - Query SHOW TABLES execution took 397 ms
 
 Analyzing table default.nyse
-2018-09-05 08:02:43 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-05 08:02:43 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-05 08:02:43 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-05 08:02:43 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-05 08:02:44 INFO  ImpalaHelper:57 - Query "REFRESH default.nyse; SHOW PARTITIONS default.nyse" execution took 807 ms
 Total 1557 files found in 519 partitions
 Checking partition count... [PASSED]
@@ -217,8 +217,8 @@ Checking table stats... [PASSED]
 Checking null values... [PASSED]
 
 Analyzing table default.nyse_external
-2018-09-05 08:02:44 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-05 08:02:44 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-05 08:02:44 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-05 08:02:44 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 No partition information found for the table: HY000, skipping...
 Database fix queries are saved as database-fix-1536134564672.sql
 
