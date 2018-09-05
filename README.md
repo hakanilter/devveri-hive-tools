@@ -1,6 +1,6 @@
 # DevVeri Hive Tools
 
-The missing tools for analyzing tables and partitions in Hive
+The missing tools for managing tables and partitions in Hive
 
 ## Getting Started
 
