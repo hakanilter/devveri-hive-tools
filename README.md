@@ -4,12 +4,12 @@ The missing tools for managing tables and partitions in Hive
 
 ## Getting Started
 
-DevVeri Hive Tools provides various useful tool for managing Hive tables and partitions. It will also help you for solving the following problems: 
+DevVeri Hive Tools provides various useful tools for managing Hive tables and partitions. It will also helps for solving the following problems: 
 
 - Small Files Problem: Many people having this issue due to frequently updated Hive tables. 
-- Manually added partitions
-- Ghost Partitions 
-- Generating DDL Scripts, including partitions, etc. 
+- Manually added partitions: Can provide queries for updating metadata
+- Ghost Partitions: Can provide queries for removing non-existed partitions
+- Generating DDL Scripts, including partitions, etc. for all cluster
 
 ## Tools
 
