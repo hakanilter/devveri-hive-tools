@@ -21,7 +21,7 @@ public class HiveConfig {
     }
 
     public HiveConfig setUrl(String url) {
-        if (url != null && !url.startsWith("jdbc:hive2://")) {
+        if (url != null && !url.startsWith("jdbc:")) {
             this.url = "jdbc:hive2://" + url;
         } else {
             this.url = url;

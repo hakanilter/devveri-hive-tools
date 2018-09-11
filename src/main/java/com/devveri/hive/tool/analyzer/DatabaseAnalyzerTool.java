@@ -13,15 +13,7 @@ import java.nio.file.Paths;
  */
 public class DatabaseAnalyzerTool {
 
-    public static void main(String[] args) throws Exception {
-        if (args.length < 2 || args.length > 3) {
-            System.err.println("Invalid usage, try:\nDatabaseAnalyzerTool <hive-host:port> <database> <include-partitions:true>");
-            System.exit(-1);
-        }
-
-        final String hostAndPort = args[0];
-        final String database = args[1];
-        final boolean includePartitions = args.length != 3 || Boolean.parseBoolean(args[2]);
+    public void run(final String hostAndPort, final String database, final boolean includePartitions) throws Exception {
         HiveConfig hiveConfig = new HiveConfig().setUrl(hostAndPort);
 
         // get database metadata
@@ -35,6 +27,14 @@ public class DatabaseAnalyzerTool {
         final String fileName = database + ".sql";
         Files.write(Paths.get(fileName), script.getBytes());
         System.out.println("DDL script is saved as " + fileName);
+    }
+
+    public static void main(String[] args) throws Exception {
+        if (args.length < 2 || args.length > 3) {
+            System.err.println("Invalid usage, try:\nDatabaseAnalyzerTool <hive-host:port> <database> <include-partitions:true>");
+            System.exit(-1);
+        }
+        new DatabaseAnalyzerTool().run(args[0], args[1], args.length != 3 || Boolean.parseBoolean(args[2]));
     }
 
 }

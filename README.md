@@ -19,21 +19,21 @@ This tool is for generating DDL scripts for a given database.
 
 ```bash
 $ ./database-analyze.sh default
-2018-09-04 16:17:54 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-04 16:17:54 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-04 16:17:54 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-04 16:17:54 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-04 16:17:54 INFO  HiveHelper:73 - Query SHOW TABLES execution took 170 ms
 2018-09-04 16:17:54 INFO  DatabaseAnalyzer:38 - Started analyzing table: nyse
-2018-09-04 16:17:54 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-04 16:17:54 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-04 16:17:54 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-04 16:17:54 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-04 16:17:54 INFO  HiveHelper:94 - Query "SHOW CREATE TABLE default.nyse" execution took 15 ms
 2018-09-04 16:17:54 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Failed to read directory information: hdfs://quickstart.cloudera:8020/user/hive/warehouse/nyse
-2018-09-04 16:17:55 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-04 16:17:55 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-04 16:17:55 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-04 16:17:55 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-04 16:17:55 INFO  HiveHelper:115 - Query "SHOW PARTITIONS default.nyse" execution took 58 ms
 2018-09-04 16:17:55 INFO  DatabaseAnalyzer:38 - Started analyzing table: nyse_external
-2018-09-04 16:17:55 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-04 16:17:55 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-04 16:17:55 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-04 16:17:55 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-04 16:17:55 INFO  HiveHelper:94 - Query "SHOW CREATE TABLE default.nyse_external" execution took 14 ms
 Failed to read directory information: hdfs://quickstart.cloudera:8020/user/cloudera/nyse_external
 Found 2 tables and 0 views
@@ -138,8 +138,8 @@ The following example shows how to fix small files problem. In the first run the
 ```bash
 $ ./table-health.sh default nyse
 Analyzing table default.nyse
-2018-09-05 08:00:03 INFO  Utils:295 - Supplied authorities: localdocker:21050
-2018-09-05 08:00:03 INFO  Utils:383 - Resolved authority: localdocker:21050
+2018-09-05 08:00:03 INFO  Utils:295 - Supplied authorities: quickstart.cloudera:21050
+2018-09-05 08:00:03 INFO  Utils:383 - Resolved authority: quickstart.cloudera:21050
 2018-09-05 08:00:05 INFO  ImpalaHelper:57 - Query "REFRESH default.nyse; SHOW PARTITIONS default.nyse" execution took 1860 ms
 Total 1557 files found in 519 partitions
 Checking partition count... [PASSED]
